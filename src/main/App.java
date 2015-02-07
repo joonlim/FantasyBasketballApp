@@ -72,7 +72,6 @@ public class App extends Application {
     //combo boxes
     private ComboBox[] team1Players = new ComboBox[13];
     private ComboBox[] team2Players = new ComboBox[13];
-    private int index = 0;
 
     private VBox main = new VBox();
     private HBox top = new HBox();
@@ -236,7 +235,7 @@ public class App extends Application {
         main.getChildren().addAll(topInfo, top, bottom);
         main.setPadding(new Insets(10, 10, 10, 10));
 
-        Scene scene = new Scene(main, 800, 650);
+        Scene scene = new Scene(main, 700, 650);
 
         topLeft.prefWidthProperty().bind(scene.widthProperty().divide(2));
         topRight.prefWidthProperty().bind(scene.widthProperty().divide(2));
@@ -265,26 +264,165 @@ public class App extends Application {
             team1Players[i] = new ComboBox(players);
             team1Players[i].setEditable(true);
             team1Players[i].setMinWidth(55);
-            team1Players[index].setOnAction(e -> {
-                String chosen = team1Players[index].getSelectionModel().getSelectedItem().toString();
-                team1PlayersChosen[index] = chosen;
-
-            });
 
             team2Players[i] = new ComboBox(players);
             team2Players[i].setEditable(true);
             team2Players[i].setMinWidth(55);
-            team2Players[index].setOnAction(e -> {
-                String chosen = team2Players[index].getSelectionModel().getSelectedItem().toString();
-                team2PlayersChosen[index] = chosen;
-            });
-
-            index++;
         }
-        index = 0;
+
+        addAction();
 
         team1Players[0].setPromptText(TEAM1DEFAULT);
 
+    }
+
+    public void addAction() {
+        //team1
+        team1Players[0].setOnAction(e -> {
+            String chosen = team1Players[0].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[0] = chosen;
+
+        });
+        team1Players[1].setOnAction(e -> {
+            String chosen = team1Players[1].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[1] = chosen;
+
+        });
+        team1Players[2].setOnAction(e -> {
+            String chosen = team1Players[2].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[2] = chosen;
+
+        });
+        team1Players[3].setOnAction(e -> {
+            String chosen = team1Players[3].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[3] = chosen;
+
+        });
+        team1Players[4].setOnAction(e -> {
+            String chosen = team1Players[4].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[4] = chosen;
+
+        });
+        team1Players[5].setOnAction(e -> {
+            String chosen = team1Players[5].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[5] = chosen;
+
+        });
+        team1Players[6].setOnAction(e -> {
+            String chosen = team1Players[6].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[6] = chosen;
+
+        });
+        team1Players[7].setOnAction(e -> {
+            String chosen = team1Players[7].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[7] = chosen;
+
+        });
+        team1Players[8].setOnAction(e -> {
+            String chosen = team1Players[8].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[8] = chosen;
+
+        });
+        team1Players[9].setOnAction(e -> {
+            String chosen = team1Players[9].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[9] = chosen;
+
+        });
+        team1Players[10].setOnAction(e -> {
+            String chosen = team1Players[10].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[10] = chosen;
+
+        });
+        team1Players[11].setOnAction(e -> {
+            String chosen = team1Players[11].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[11] = chosen;
+
+        });
+        team1Players[12].setOnAction(e -> {
+            String chosen = team1Players[12].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team1PlayersChosen[12] = chosen;
+
+        });
+
+        //team2
+        team2Players[0].setOnAction(e -> {
+            String chosen = team2Players[0].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[0] = chosen;
+        });
+        team2Players[1].setOnAction(e -> {
+            String chosen = team2Players[1].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[1] = chosen;
+        });
+        team2Players[2].setOnAction(e -> {
+            String chosen = team2Players[2].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[2] = chosen;
+        });
+        team2Players[3].setOnAction(e -> {
+            String chosen = team2Players[3].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[3] = chosen;
+        });
+        team2Players[4].setOnAction(e -> {
+            String chosen = team2Players[4].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[4] = chosen;
+        });
+        team2Players[5].setOnAction(e -> {
+            String chosen = team2Players[5].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[5] = chosen;
+        });
+        team2Players[6].setOnAction(e -> {
+            String chosen = team2Players[6].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[6] = chosen;
+        });
+        team2Players[7].setOnAction(e -> {
+            String chosen = team2Players[7].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[7] = chosen;
+        });
+        team2Players[8].setOnAction(e -> {
+            String chosen = team2Players[8].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[8] = chosen;
+        });
+        team2Players[9].setOnAction(e -> {
+            String chosen = team2Players[9].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[9] = chosen;
+        });
+        team2Players[10].setOnAction(e -> {
+            String chosen = team2Players[10].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[10] = chosen;
+        });
+        team2Players[11].setOnAction(e -> {
+            String chosen = team2Players[11].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[11] = chosen;
+        });
+        team2Players[12].setOnAction(e -> {
+            String chosen = team2Players[12].getSelectionModel().getSelectedItem().toString();
+            System.out.println(chosen);
+            team2PlayersChosen[12] = chosen;
+        });
     }
 
     private void intializePlayerArrays() {

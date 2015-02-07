@@ -104,12 +104,11 @@ public class Graph extends Pane {
 
         getGameData();
 
-        team1ListOfPlayers[0].printStats();
-
         yAxis.setLabel(category);
 
         for (int i = 0; i < team1PlayersChosen.length; i++) {
             if (!team1PlayersChosen[i].equals("")) {
+                
                 team1[i] = new XYChart.Series();
                 team1[i].setName(team1PlayersChosen[i] + " " + category);
                 // add points here
@@ -119,6 +118,7 @@ public class Graph extends Pane {
 
                 //test
                 for (Game game : games) {
+                    
                     if (game.getGAMEDATE().compareTo(startDate) >= 0 && game.getGAMEDATE().compareTo(endDate) <= 0) {
                         // add coordinate
                         team1[i].getData().add(new XYChart.Data(game.getGAMEDATE(), getCategory(game)));
@@ -149,6 +149,7 @@ public class Graph extends Pane {
             }
 
         }
+        
 
     }
 
