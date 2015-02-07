@@ -5,6 +5,9 @@
  */
 package main;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -17,6 +20,19 @@ import javafx.scene.layout.Pane;
  */
 public class Graph extends Pane {
 
+    String[] team1PlayersChosen;
+    String[] team2PlayersChosen;
+    String category;
+
+    String startDate;
+    String endDate;
+
+    Player[] team1ListOfPlayers;
+    Player[] team2ListOfPlayers;
+
+    ArrayList<String> p1Dates = new ArrayList<>();
+    ArrayList<Integer> p1Cat = new ArrayList<>();
+
     // has graph on left,
     // has vertbox on right containing dates
     final CategoryAxis xAxis = new CategoryAxis();
@@ -28,14 +44,68 @@ public class Graph extends Pane {
     XYChart.Series[] team2 = new XYChart.Series[13];
 
     public Graph() {
+        this.team2ListOfPlayers = new Player[13];
+        this.team1ListOfPlayers = new Player[13];
         lineChart.setTitle("Comparison");
         xAxis.setLabel("Days");
 
         this.getChildren().add(lineChart);
     }
 
-    public void reload(String category, String[] team1PlayersChosen, String[] team2PlayersChosen) {
-        
+    private void getGameData() throws IOException {
+        for (int i = 0; i < team1PlayersChosen.length; i++) {
+            if (!team1PlayersChosen[i].equals("")) {
+                Player myPlayer1 = new Player(team1PlayersChosen[i], NBAStatChecker.getURL(team1PlayersChosen[i]));
+                team1ListOfPlayers[i] = myPlayer1;
+
+            }
+            if (!team2PlayersChosen[i].equals("")) {
+                Player myPlayer2 = new Player(team2PlayersChosen[i], NBAStatChecker.getURL(team2PlayersChosen[i]));
+                team2ListOfPlayers[i] = myPlayer2;
+            }
+        }
+
+    }
+
+    private double getCategory(Game game) {
+        switch (category) {
+            case "Points":
+                return game.getPTS();
+            case "3 Pointers Made":
+                return game.getTHREEPOINTMADE();
+            case "Rebounds":
+                return game.getREB();
+            case "Assists":
+                return game.getAST();
+            case "Steals":
+                return game.getSTL();
+            case "Blocks":
+                return game.getBLK();
+            case "FG%":
+                return game.getFIELDGOALPERCENTAGE();
+            case "FT%":
+                return game.getFREETHROWPERCENTAGE();
+            case "Turnovers":
+                return game.getTO();
+            case "Minutes Played":
+                return game.getMINUTESPLAYED();
+            default:
+                return 0;
+        }
+    }
+
+    public void reload(String category, String[] team1PlayersChosen, String[] team2PlayersChosen, String start, String end) throws IOException {
+        this.team1PlayersChosen = team1PlayersChosen;
+        this.team2PlayersChosen = team2PlayersChosen;
+        this.category = category;
+
+        startDate = start;
+        endDate = end;
+
+        getGameData();
+
+        team1ListOfPlayers[0].printStats();
+
         yAxis.setLabel(category);
 
         for (int i = 0; i < team1PlayersChosen.length; i++) {
@@ -44,30 +114,42 @@ public class Graph extends Pane {
                 team1[i].setName(team1PlayersChosen[i] + " " + category);
                 // add points here
                 // for the date range selected: add player points
-                team1[i].getData().add(new XYChart.Data("Jan", 23));
-                team1[i].getData().add(new XYChart.Data("Feb", 14));
-                team1[i].getData().add(new XYChart.Data("Mar", 15));
-                team1[i].getData().add(new XYChart.Data("Apr", 24));
-                team1[i].getData().add(new XYChart.Data("May", 34));
-                team1[i].getData().add(new XYChart.Data("Jun", 36));
-                team1[i].getData().add(new XYChart.Data("Jul", 22));
-                team1[i].getData().add(new XYChart.Data("Aug", 45));
-                team1[i].getData().add(new XYChart.Data("Sep", 43));
-                team1[i].getData().add(new XYChart.Data("Oct", 17));
-                team1[i].getData().add(new XYChart.Data("Nov", 29));
-                team1[i].getData().add(new XYChart.Data("Dec", 25));
+                // from start date to end date
+                ArrayList<Game> games = team1ListOfPlayers[i].games2014to2015;
+
+                //test
+                for (Game game : games) {
+                    if (game.getGAMEDATE().compareTo(startDate) >= 0 && game.getGAMEDATE().compareTo(endDate) <= 0) {
+                        // add coordinate
+                        team1[i].getData().add(new XYChart.Data(game.getGAMEDATE(), getCategory(game)));
+                    }
+                }
 
                 //
                 lineChart.getData().add(team1[i]);
+
             }
+
             if (!team2PlayersChosen[i].equals("")) {
                 team2[i] = new XYChart.Series();
                 team2[i].setName(team2PlayersChosen[i] + " " + category);
+                lineChart.getData().add(team2[i]);
+
+                ArrayList<Game> games = team2ListOfPlayers[i].games2014to2015;
+
+                //test
+                for (Game game : games) {
+                    if (game.getGAMEDATE().compareTo(startDate) >= 0 && game.getGAMEDATE().compareTo(endDate) <= 0) {
+                        // add coordinate
+                        team2[i].getData().add(new XYChart.Data(game.getGAMEDATE(), getCategory(game)));
+                    }
+                }
+
                 lineChart.getData().add(team2[i]);
             }
 
         }
 
     }
-    
+
 }

@@ -188,7 +188,7 @@ public class Player {
         deleteFile(playerName + "-gamelog.html");
 
         while (!stack.empty()) {
-            if (stack.peek().DATE.contains("10/") && !stack.peek().DATE.contains("10/28") && !stack.peek().DATE.contains("10/29") && !stack.peek().DATE.contains("10/30") && !stack.peek().DATE.contains("10/31")) {
+            if (stack.peek().getDATE().contains("10/") && !stack.peek().getDATE().contains("10/28") && !stack.peek().getDATE().contains("10/29") && !stack.peek().getDATE().contains("10/30") && !stack.peek().getDATE().contains("10/31")) {
                 preseason2014to2015.add(stack.pop());
             } else {
                 games2014to2015.add(stack.pop());

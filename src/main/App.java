@@ -10,18 +10,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -30,6 +37,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  *
@@ -39,11 +47,10 @@ public class App extends Application {
 
     final String FILENAME = "./src/res/nbaplayers.txt";
     final String TEAM1DEFAULT = "Damian Lillard";
-    final String TEAM2DEFAULT = "Chris Paul";
 
     private String category = "Points";
     private ComboBox categories;
-        private ObservableList<String> cats
+    private ObservableList<String> cats
             = FXCollections.observableArrayList(
                     "Points",
                     "3 Pointers Made",
@@ -56,9 +63,7 @@ public class App extends Application {
                     "Turnovers",
                     "Minutes Played"
             );
-    
-    
-    
+
     private ObservableList<String> players; // list that will be added into combo boxes
 
     private String[] team1PlayersChosen = new String[13]; // array of players that are chosen from team 1
@@ -82,6 +87,13 @@ public class App extends Application {
     private GridPane topRight = new GridPane();
     private HBox bottom = new HBox();
     private VBox bottomLeft = new VBox(10);
+
+    private GridPane datePane = new GridPane();
+    String start;
+    String end;
+
+    private DatePicker startDate;
+    private DatePicker endDate;
 
     private void createTopInfo() {
 
@@ -146,6 +158,54 @@ public class App extends Application {
         }
     }
 
+    private void initializeDatePickers() {
+        VBox vbox = new VBox(20);
+        vbox.setStyle("-fx-padding: 10;");
+        startDate = new DatePicker();
+        endDate = new DatePicker();
+        startDate.setValue(LocalDate.now());
+        final Callback<DatePicker, DateCell> dayCellFactory
+                = new Callback<DatePicker, DateCell>() {
+                    @Override
+                    public DateCell call(final DatePicker datePicker) {
+                        return new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate item, boolean empty) {
+                                super.updateItem(item, empty);
+
+                                if (item.isBefore(startDate.getValue().plusDays(1))) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #ffc0cb;");
+                                }
+                            }
+                        };
+                    }
+                };
+        endDate.setDayCellFactory(dayCellFactory);
+        endDate.setValue(startDate.getValue().plusDays(1));
+        start = startDate.getValue().toString();
+        end = endDate.getValue().toString();
+
+        startDate.setOnAction(event -> {
+            start = startDate.getValue().toString();
+        });
+        endDate.setOnAction(event -> {
+            end = endDate.getValue().toString();
+        });
+
+        datePane.setHgap(10);
+        datePane.setVgap(10);
+        Label checkInlabel = new Label("Start Date:");
+        datePane.add(checkInlabel, 0, 0);
+        GridPane.setHalignment(checkInlabel, HPos.LEFT);
+        datePane.add(startDate, 0, 1);
+        Label checkOutlabel = new Label("End Date:");
+        datePane.add(checkOutlabel, 0, 2);
+        GridPane.setHalignment(checkOutlabel, HPos.LEFT);
+        datePane.add(endDate, 0, 3);
+        vbox.getChildren().add(datePane);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -153,14 +213,14 @@ public class App extends Application {
         CreateGraph createHandler = new CreateGraph();
         initializeCategories();
 
-        
-        bottom.setPadding(new Insets(5,5,5,5));
-        bottomLeft.getChildren().addAll(createGraphButton, categories);
+        initializeDatePickers();
+
+        bottom.setPadding(new Insets(5, 5, 5, 5));
+        bottomLeft.getChildren().addAll(createGraphButton, categories, datePane);
         bottom.getChildren().addAll(bottomLeft, graph);
         createGraphButton.setOnAction(createHandler);
 
         team1PlayersChosen[0] = TEAM1DEFAULT;
-        team2PlayersChosen[0] = TEAM2DEFAULT;
 
         intializePlayerArrays();
         // initialize combo boxes
@@ -196,7 +256,7 @@ public class App extends Application {
         categories.setOnAction(e -> {
             category = categories.getSelectionModel().getSelectedItem().toString();
         });
-        
+
     }
 
     private void initializeComboBoxes() {
@@ -224,12 +284,12 @@ public class App extends Application {
         index = 0;
 
         team1Players[0].setPromptText(TEAM1DEFAULT);
-        team2Players[0].setPromptText(TEAM2DEFAULT);
 
     }
 
     private void intializePlayerArrays() {
         // initialize player arrays to empty strings
+        team2PlayersChosen[0] = "";
         for (int i = 1; i < 13; i++) {
             team1PlayersChosen[i] = "";
             team2PlayersChosen[i] = "";
@@ -246,7 +306,11 @@ public class App extends Application {
         public void handle(ActionEvent e) {
             bottom.getChildren().remove(graph);
             graph = new Graph();
-            graph.reload(category, team1PlayersChosen, team2PlayersChosen);
+            try {
+                graph.reload(category, team1PlayersChosen, team2PlayersChosen, start, end);
+            } catch (IOException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
             bottom.getChildren().add(graph);
 
         }
