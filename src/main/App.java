@@ -262,11 +262,9 @@ public class App extends Application {
         // team1's combo boxes. 13 players
         for (int i = 0; i < 13; i++) {
             team1Players[i] = new ComboBox(players);
-            team1Players[i].setEditable(true);
             team1Players[i].setMinWidth(55);
 
             team2Players[i] = new ComboBox(players);
-            team2Players[i].setEditable(true);
             team2Players[i].setMinWidth(55);
         }
 

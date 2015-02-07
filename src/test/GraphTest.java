@@ -5,6 +5,7 @@
  */
 package test;
 
+import java.time.LocalDate;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,7 +24,7 @@ public class GraphTest extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Graph graph = new Graph();
-        graph.reload(CATEGORY, TEAM1, TEAM2);
+//        graph.reload(CATEGORY, TEAM1, TEAM2);
         Scene scene = new Scene(graph);
         primaryStage.setScene(scene);
         primaryStage.show();

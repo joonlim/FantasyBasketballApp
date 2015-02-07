@@ -94,6 +94,77 @@ public class Graph extends Pane {
         }
     }
 
+    private void insertAllDates() {
+        XYChart.Series a = new XYChart.Series();
+        String date = startDate;
+        while (true) {
+            a.getData().add(new XYChart.Data(date, 0));
+
+            if (date.equals(endDate)) {
+                break;
+            }
+            date = increment(date);
+        }
+
+        lineChart.getData().add(a);
+    }
+
+    private String increment(String date) {
+        int year = Integer.parseInt(date.substring(0, 4));
+        int month = Integer.parseInt(date.substring(5, 7));
+        int day = Integer.parseInt(date.substring(8));
+
+        if (month == 12 && day == 31) {
+            year++;
+            month = 1;
+            day = 1;
+        } else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+            if (day == 31) {
+                month++;
+                day = 1;
+            } else {
+                day++;
+            }
+        } else {// months without 31 days
+            if (month == 2 && year % 4 == 0) {//leap year
+                //29 days
+                if (day == 29) {
+                    month = 3;
+                    day = 1;
+                } else {
+                    day++;
+                }
+            } else if (month == 2) {
+                // not leap year
+                if (day == 28) {
+                    month = 3;
+                    day = 1;
+                } else {
+                    day++;
+                }
+            } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+                if (day == 30) {
+                    month++;
+                    day = 1;
+                } else {
+                    day++;
+                }
+            }
+
+        }
+
+        String monthS = month + "";
+        String dayS = day + "";
+        if (month <= 10) {
+            monthS = "0" + monthS;
+        }
+        if (day <= 10) {
+            dayS = "0" + dayS;
+        }
+
+        return year + "-" + monthS + "-" + dayS;
+    }
+
     public void reload(String category, String[] team1PlayersChosen, String[] team2PlayersChosen, String start, String end) throws IOException {
         this.team1PlayersChosen = team1PlayersChosen;
         this.team2PlayersChosen = team2PlayersChosen;
@@ -106,11 +177,20 @@ public class Graph extends Pane {
 
         yAxis.setLabel(category);
 
+        // add buffer line to put in all dates in advance to prevent error
+        insertAllDates();
+
+        //
         for (int i = 0; i < team1PlayersChosen.length; i++) {
             if (!team1PlayersChosen[i].equals("")) {
-                
+
                 team1[i] = new XYChart.Series();
-                team1[i].setName(team1PlayersChosen[i] + " " + category);
+                int indexOfComma = team1PlayersChosen[i].indexOf(",");
+                if (indexOfComma > 0) {
+                    team1[i].setName(team1PlayersChosen[i].substring(indexOfComma + 1) + " " + team1PlayersChosen[i].substring(0, indexOfComma) + " " + category);
+                } else {
+                    team1[i].setName(team1PlayersChosen[i] + " " + category);
+                }
                 // add points here
                 // for the date range selected: add player points
                 // from start date to end date
@@ -118,7 +198,7 @@ public class Graph extends Pane {
 
                 //test
                 for (Game game : games) {
-                    
+
                     if (game.getGAMEDATE().compareTo(startDate) >= 0 && game.getGAMEDATE().compareTo(endDate) <= 0) {
                         // add coordinate
                         team1[i].getData().add(new XYChart.Data(game.getGAMEDATE(), getCategory(game)));
@@ -132,8 +212,13 @@ public class Graph extends Pane {
 
             if (!team2PlayersChosen[i].equals("")) {
                 team2[i] = new XYChart.Series();
-                team2[i].setName(team2PlayersChosen[i] + " " + category);
-                lineChart.getData().add(team2[i]);
+                int indexOfComma = team2PlayersChosen[i].indexOf(",");
+                if (indexOfComma > 0) {
+                    team2[i].setName(team2PlayersChosen[i].substring(indexOfComma + 1) + " " + team2PlayersChosen[i].substring(0, indexOfComma) + " " + category);
+
+                } else {
+                    team2[i].setName(team2PlayersChosen[i] + " " + category);
+                }
 
                 ArrayList<Game> games = team2ListOfPlayers[i].games2014to2015;
 
@@ -149,7 +234,6 @@ public class Graph extends Pane {
             }
 
         }
-        
 
     }
 
